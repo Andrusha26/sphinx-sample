@@ -1,0 +1,40 @@
+version: '3.5'
+
+services:
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'sphinx_indexing'
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+    networks:
+      - backend
+  
+  sphinx-master:
+    build:
+      context: sphinx
+      dockerfile: Dockerfile
+    ports:
+      - 7001:7001
+    volumes:
+      - sphinx-data:/sphinx/data/
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
+    name: backend
+
+volumes:
+  my-db:
+  sphinx-data:
